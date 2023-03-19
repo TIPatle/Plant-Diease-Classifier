@@ -7,7 +7,7 @@ import tensorflow as tf
 
 app = FastAPI()
 model = tf.keras.models.load_model("../models/1")
-class_names = ['Pepper__bell___Bacterial_spot', 'Pepper__bell___healthy', 'Potato___Early_blight', 'Potato___Late_blight', 'Potato___healthy', 'Tomato_Bacterial_spot', 'Tomato_Early_blight', 'Tomato_Late_blight', 'Tomato_Leaf_Mold', 'Tomato_Septoria_leaf_spot', 'Tomato_Spider_mites_Two_spotted_spider_mite', 'Tomato__Target_Spot', 'Tomato__Tomato_YellowLeaf__Curl_Virus', 'Tomato__Tomato_mosaic_virus', 'Tomato_healthy']
+class_names = ['Pepper bell Bacterial spot', 'Pepper bell healthy', 'Potato Early blight', 'Potato Late blight', 'Potato healthy', 'Tomato Bacterial spot', 'Tomato Early blight', 'Tomato Late blight', 'Tomato Leaf Mold', 'Tomato Septoria leaf spot', 'Tomato Spider mites Two spotted spider mite', 'Tomato Target Spot', 'Tomato YellowLeaf Curl Virus', 'Tomato mosaic virus', 'Tomato healthy']
 
 @app.get("/ping")
 async def ping():
@@ -21,7 +21,10 @@ async def predict(file:UploadFile = File(...)):
     prediction = model.predict(image)
     confidence = np.max(prediction[0])*100
     img_class = class_names[np.argmax(prediction[0])]
-    return confidence, img_class
+    return {
+        "Confidence": confidence, 
+        "Class": img_class
+    }
 
 if __name__ =="__main__":
-    uvicorn.run(app, host="localhost", port=8000)
+    uvicorn.run(app, host="localhost", port=5000)
